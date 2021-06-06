@@ -1,0 +1,72 @@
+//plugins {
+//    id 'com.android.application' // -> apk
+//    id 'kotlin-android'
+//}
+
+if (isRelease) {
+    apply plugin: 'com.android.library'
+} else {
+    apply plugin: 'com.android.application'
+}
+
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion app_android.compileSdkVersion
+    buildToolsVersion app_android.buildToolsVersion
+
+    defaultConfig {
+        if (!isRelease){
+            applicationId "com.erkuai.person"
+        }
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    // 源集  一般用来设置Java目录或者资源目录
+    sourceSets {
+        main {
+            if (isRelease) {
+                manifest.srcFile 'src/main/AndroidManifest/xml'
+                // 集成模式下，这个debug目录下的文件不需要合并到主工程
+                java {
+                    exclude '**/debug/**'
+                }
+            } else {
+                manifest.srcFile 'src/main/debug/AndroidManifest/xml'
+            }
+        }
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation project(':common')
+}

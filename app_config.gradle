@@ -1,0 +1,12 @@
+ext {
+
+    // 是否是发布模式
+    isRelease = false
+
+    // Map
+    app_android = [
+            compileSdkVersion: 30,
+            buildToolsVersion: "30.0.3",
+    ]
+
+}
