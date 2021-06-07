@@ -44,6 +44,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation project(':common')
+    implementation project(':annotation')
 
     if (isRelease) {
         implementation project(':order')
