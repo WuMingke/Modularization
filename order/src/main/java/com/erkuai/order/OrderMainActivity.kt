@@ -1,7 +1,9 @@
 package com.erkuai.order
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.erkuai.common.NetManagerUtils
 
 class OrderMainActivity : AppCompatActivity() {
@@ -10,5 +12,9 @@ class OrderMainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_order_main)
 
         NetManagerUtils.getNetConfig()
+    }
+
+    fun toDebugOrder(view: View) {
+//        startActivity(Intent(this, OrderDebugActivity::class.java))
     }
 }

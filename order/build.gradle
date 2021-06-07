@@ -45,15 +45,13 @@ android {
     // 源集  一般用来设置Java目录或者资源目录
     sourceSets {
         main {
+
             if (isRelease) {
-                manifest.srcFile 'src/main/AndroidManifest/xml'
-                // 集成模式下，这个debug目录下的文件不需要合并到主工程
-                java {
-                    exclude '**/debug/**'
-                }
+                manifest.srcFile 'src/main/release/AndroidManifest.xml'
             } else {
-                manifest.srcFile 'src/main/debug/AndroidManifest/xml'
+                manifest.srcFile 'src/main/AndroidManifest.xml'
             }
+
         }
     }
 }
