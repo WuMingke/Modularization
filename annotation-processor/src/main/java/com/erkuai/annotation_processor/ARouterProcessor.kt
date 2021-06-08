@@ -2,12 +2,14 @@ package com.erkuai.annotation_processor
 
 import com.erkuai.annotation.ARouter
 import com.google.auto.service.AutoService
+import com.squareup.kotlinpoet.*
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
+
 
 /**
  *  注解处理器
@@ -36,6 +38,10 @@ class ARouterProcessor : AbstractProcessor() {
         typesTools = p0?.typeUtils
         messager = p0?.messager
         filer = p0?.filer
+
+//        mModuleName = p0?.options?.get(ProcessorConfig.OPTIONS)
+
+        messager?.printMessage(Diagnostic.Kind.NOTE, "processor 初始化完成.....")
     }
 
     override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
@@ -53,10 +59,54 @@ class ARouterProcessor : AbstractProcessor() {
 
             // 获取全类名
             val className = ele?.simpleName.toString()
-            messager?.printMessage(Diagnostic.Kind.NOTE, "className = $className")
+            messager?.printMessage(Diagnostic.Kind.NOTE, "被ARouter注解的类 className = $className")
 
+            val aRouter = ele.getAnnotation(ARouter::class.java)
+
+            // 生成一段代码
+            generateHelloWorld()
         }
         return true
+    }
+
+    private fun generateHelloWorld() {
+
+        // 创建一个类类型
+        val greeterClass = ClassName("myGenerate", "Greeter")
+// 创建名为HelloWorld的文件
+        val file = FileSpec.builder("myGenerate", "HelloWorld")
+            // 文件中添加一个Greeter类
+            .addType(
+                TypeSpec.classBuilder("Greeter")
+                    // 类中的构造方法中，增加一个name属性
+                    .primaryConstructor(
+                        FunSpec.constructorBuilder()
+                            .addParameter("name", String::class)
+                            .build()
+                    )
+                    // 类中增加一个方法
+                    .addFunction(
+                        FunSpec.builder("greet")
+                            // 方法中的语句，%P通配符代表了字符串模板
+                            .addStatement("println(%P)", "Hello, \$name")
+                            .build()
+                    )
+                    .build()
+            )
+            // 在HelloWorld的文件中增加一个main方法
+            .addFunction(
+                FunSpec.builder("main")
+                    // main方法中增加一个args的可变参数
+                    .addParameter("args", String::class, KModifier.VARARG)
+                    // main方法中调用Greeter类中的greet方法
+                    .addStatement("%T(args[0]).greet()", greeterClass)
+                    .build()
+            )
+            .build()
+// 将文件写入输出流。
+        filer?.let {
+            file.writeTo(it)
+        }
     }
 
 }

@@ -45,6 +45,7 @@ dependencies {
 
     implementation project(':common')
     implementation project(':annotation')
+    annotationProcessor project(':annotation-processor')  // 注解处理器
 
     if (isRelease) {
         implementation project(':order')
